@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, APIRouter
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, APIRouter, HTTPException
 
 app = FastAPI()
 router = APIRouter()
@@ -26,6 +26,12 @@ manager = ConnectionManager()
 
 @router.websocket("/ws/chat")
 async def websocket_endpoint(websocket: WebSocket):
+    # Authorization check
+    token = websocket.headers.get("Authorization")
+    if token != "valid_token":
+        await websocket.close(code=1008)
+        raise HTTPException(status_code=403, detail="Unauthorized access")
+
     await manager.connect(websocket)
     try:
         while True:

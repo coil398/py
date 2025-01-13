@@ -16,6 +16,10 @@ async def chat_client():
                 except websockets.ConnectionClosed:
                     print("Connection closed")
                     break
+                except websockets.WebSocketException as e:
+                    if e.code == 403:
+                        print("Unauthorized access - 403 Forbidden")
+                        break
 
         asyncio.create_task(receive_messages())
 
