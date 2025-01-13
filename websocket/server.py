@@ -2,7 +2,6 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, APIRouter
 
 app = FastAPI()
 router = APIRouter()
-app.include_router(router)
 
 
 class ConnectionManager:
@@ -34,3 +33,6 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         await manager.broadcast("client left")
+
+
+app.include_router(router)
